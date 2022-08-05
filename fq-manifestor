@@ -70,6 +70,10 @@ def fq_manifestor(input_dir,
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print('USAGE: fq-manifestor input-directory output-filepath')
+        exit(0)
+
     input_dir = sys.argv[1]
     output_fp = sys.argv[2]
 
