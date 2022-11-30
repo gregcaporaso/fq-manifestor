@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import glob
-import sys
 import os.path
 import re
 
@@ -70,23 +69,4 @@ def fq_manifestor(input_dir,
     with open(output_fp, 'w') as of:
         of.write('\n'.join(lines))
         of.write('\n')
-
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print('USAGE: fq-manifestor input-directory output-filepath')
-        exit(0)
-
-    input_dir = sys.argv[1]
-    output_fp = sys.argv[2]
-
-    fq_manifestor(input_dir, output_fp)
-    output_fp = os.path.abspath(output_fp)
-
-    print("To import, try running:")
-    print("qiime tools import "\
-          "--type 'SampleData[PairedEndSequencesWithQuality]' "\
-          "--input-path %s --output-path demux.qza "\
-          "--input-format PairedEndFastqManifestPhred33V2" % output_fp)
 
