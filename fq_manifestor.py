@@ -23,7 +23,8 @@ def fq_manifestor(input_dir,
     if filter_pattern is not None:
         fq_filepaths = [fp for fp in fq_filepaths if filter_pattern in fp]
 
-    if verbose: print('Found %d fastq files.' % len(fq_filepaths))
+    n_fq_filepaths = len(fq_filepaths)
+    if verbose: print('Found %d fastq files.' % n_fq_filepaths)
 
     sids_to_fps = {}
 
@@ -65,6 +66,13 @@ def fq_manifestor(input_dir,
             raise ValueError('Missing reverse read for sample: %s' % s)
 
         lines.append('%s\t%s\t%s' % (sid, fwd_fq_filepath, rev_fq_filepath))
+
+    if (len(lines) - 1) != (n_fq_filepaths / 2) and verbose:
+        print("\n** WARNING**: "
+              "The number of manifest records doesn't align with the number of "
+              "fastq files that were found. It's possible that the match "
+              "patterns aren't working correctly for your files. These can "
+              "be customized when using the API.\n")
 
     with open(output_fp, 'w') as of:
         of.write('\n'.join(lines))
