@@ -28,6 +28,8 @@ def main():
                         help='Pattern to identify reverse reads (default: _R2_)')
     parser.add_argument('--filter-pattern',
                         help='Only include files containing this pattern (default: None)')
+    parser.add_argument('--exclude-patterns', nargs='+', default=['Undetermined'],
+                        help='List of patterns to exclude from sample IDs (default: Undetermined)')
     parser.add_argument('--quiet', action='store_true',
                         help='Suppress verbose output')
 
@@ -62,6 +64,7 @@ def main():
             f_read_pattern=args.f_read_pattern,
             r_read_pattern=args.r_read_pattern,
             filter_pattern=args.filter_pattern,
+            exclude_patterns=args.exclude_patterns,
             verbose=verbose
         )
 

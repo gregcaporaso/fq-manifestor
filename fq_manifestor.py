@@ -11,6 +11,7 @@ def fq_manifestor(input_dir,
                   f_read_pattern='_R1_',
                   r_read_pattern='_R2_',
                   filter_pattern=None,
+                  exclude_patterns=['Undetermined'],
                   verbose=True):
 
     input_dir = os.path.abspath(input_dir)
@@ -37,6 +38,11 @@ def fq_manifestor(input_dir,
         else:
             sid = sid_fields[0]
 
+        # Skip if the sample ID matches any exclude pattern
+        if exclude_patterns and any(pattern in sid for pattern in exclude_patterns):
+            if verbose: print("Excluding file with sample ID '%s': %s" % (sid, fq_filepath))
+            continue
+
         if bool(re.search(f_read_pattern, fq_filename)):
             forward = True
             reverse = False
@@ -60,10 +66,10 @@ def fq_manifestor(input_dir,
     lines = ['sample-id\tforward-absolute-filepath\treverse-absolute-filepath']
     for sid, (fwd_fq_filepath, rev_fq_filepath) in sids_to_fps.items():
         if fwd_fq_filepath is None:
-            raise ValueError('Missing forward read for sample: %s' % s)
+            raise ValueError('Missing forward read for sample: %s' % sid)
 
         if rev_fq_filepath is None:
-            raise ValueError('Missing reverse read for sample: %s' % s)
+            raise ValueError('Missing reverse read for sample: %s' % sid)
 
         lines.append('%s\t%s\t%s' % (sid, fwd_fq_filepath, rev_fq_filepath))
 
@@ -77,4 +83,3 @@ def fq_manifestor(input_dir,
     with open(output_fp, 'w') as of:
         of.write('\n'.join(lines))
         of.write('\n')
-
