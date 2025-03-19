@@ -48,6 +48,11 @@ def main():
         output_fp = args.output_fp
         verbose = not args.quiet
 
+    # Check if input directory exists
+    if not os.path.isdir(input_dir):
+        print(f"Error: Input directory '{input_dir}' does not exist or is not a directory.", file=sys.stderr)
+        sys.exit(1)
+
         # Call the function with all parameters
         fq_manifestor.fq_manifestor(
             input_dir=input_dir,
