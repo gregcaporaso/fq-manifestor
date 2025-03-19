@@ -2,21 +2,78 @@
 
 import sys
 import os.path
-
+import argparse
 import fq_manifestor
 
-if len(sys.argv) != 3:
-    print('USAGE: fq-manifestor input-directory output-filepath')
-    exit(0)
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate QIIME 2 paired-end fastq manifest files from a directory of fastq files.",
+        epilog="Example: fq-manifestor input-directory output-filepath"
+    )
 
-input_dir = sys.argv[1]
-output_fp = sys.argv[2]
+    # Required arguments
+    parser.add_argument('input_dir',
+                        help='Directory containing fastq files')
+    parser.add_argument('output_fp',
+                        help='Output filepath for the manifest')
 
-fq_manifestor.fq_manifestor(input_dir, output_fp)
-output_fp = os.path.abspath(output_fp)
+    # Optional arguments
+    parser.add_argument('--fq-extensions', nargs='+', default=['fastq.gz', 'fq.gz'],
+                        help='List of fastq file extensions to look for (default: fastq.gz fq.gz)')
+    parser.add_argument('--split-pattern', default='_',
+                        help='Pattern to split filename to extract sample ID (default: _)')
+    parser.add_argument('--f-read-pattern', default='_R1_',
+                        help='Pattern to identify forward reads (default: _R1_)')
+    parser.add_argument('--r-read-pattern', default='_R2_',
+                        help='Pattern to identify reverse reads (default: _R2_)')
+    parser.add_argument('--filter-pattern',
+                        help='Only include files containing this pattern (default: None)')
+    parser.add_argument('--quiet', action='store_true',
+                        help='Suppress verbose output')
 
-print("To import, try running:")
-print("qiime tools import "\
-      "--type 'SampleData[PairedEndSequencesWithQuality]' "\
-      "--input-path %s --output-path demux.qza "\
-      "--input-format PairedEndFastqManifestPhred33V2" % output_fp)
+    # Check if no arguments were provided - maintain backward compatibility
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+
+    # Special handling for backward compatibility (exactly 2 positional args, no options)
+    if len(sys.argv) == 3 and not sys.argv[1].startswith('-') and not sys.argv[2].startswith('-'):
+        input_dir = sys.argv[1]
+        output_fp = sys.argv[2]
+        verbose = True
+    else:
+        # Parse arguments with argparse
+        args = parser.parse_args()
+        input_dir = args.input_dir
+        output_fp = args.output_fp
+        verbose = not args.quiet
+
+        # Call the function with all parameters
+        fq_manifestor.fq_manifestor(
+            input_dir=input_dir,
+            output_fp=output_fp,
+            fq_extensions=args.fq_extensions,
+            split_pattern=args.split_pattern,
+            f_read_pattern=args.f_read_pattern,
+            r_read_pattern=args.r_read_pattern,
+            filter_pattern=args.filter_pattern,
+            verbose=verbose
+        )
+
+    # If we're in the backward compatibility mode, call with default parameters
+    if len(sys.argv) == 3 and not sys.argv[1].startswith('-') and not sys.argv[2].startswith('-'):
+        fq_manifestor.fq_manifestor(input_dir, output_fp)
+
+    # Get absolute path for output message
+    output_fp = os.path.abspath(output_fp)
+
+    # Print import command suggestion
+    if verbose:
+        print("To import, try running:")
+        print("qiime tools import "
+              "--type 'SampleData[PairedEndSequencesWithQuality]' "
+              "--input-path %s --output-path demux.qza "
+              "--input-format PairedEndFastqManifestPhred33V2" % output_fp)
+
+if __name__ == "__main__":
+    main()

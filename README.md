@@ -22,17 +22,17 @@ If you have a directory of files, `/sequence-data/humanure-run1`, containing dem
 $ tree /sequence-data/humanure-run1
 /sequence-data/humanure-run1
 ├── 07717ac5_L001-ds.0795510ce4044fbab87b5c0b08aec105
-│   ├── 07717ac5_S71_L001_R1_001.fastq.gz
-│   └── 07717ac5_S71_L001_R2_001.fastq.gz
+│   ├── 07717ac5_S71_L001_R1_001.fastq.gz
+│   └── 07717ac5_S71_L001_R2_001.fastq.gz
 ├── 08a10d08_L001-ds.060074faec87417b88e83d07470e7b10
-│   ├── 08a10d08_S30_L001_R1_001.fastq.gz
-│   └── 08a10d08_S30_L001_R2_001.fastq.gz
+│   ├── 08a10d08_S30_L001_R1_001.fastq.gz
+│   └── 08a10d08_S30_L001_R2_001.fastq.gz
 ├── 091cbf06_L001-ds.9e1f729478e645bfa87b695aec93300d
-│   ├── 091cbf06_S35_L001_R1_001.fastq.gz
-│   └── 091cbf06_S35_L001_R2_001.fastq.gz
+│   ├── 091cbf06_S35_L001_R1_001.fastq.gz
+│   └── 091cbf06_S35_L001_R2_001.fastq.gz
 ├── 10583739_1_L001-ds.0e7c88a021984a38b930ce5c60ddadfd
-│   ├── 10583739-1_S72_L001_R1_001.fastq.gz
-│   └── 10583739-1_S72_L001_R2_001.fastq.gz
+│   ├── 10583739-1_S72_L001_R1_001.fastq.gz
+│   └── 10583739-1_S72_L001_R2_001.fastq.gz
 ```
 
 In this case there are four samples, `07717ac5`, `08a10d08`, `091cbf06`, and `10583739-1`. The samples are grouped into per-sample directories, and there is a forward (R1) and reverse (R2) read file for each sample. This script will assume that the text before the first `_` in the fastq filenames (not the directory names) is the sample id.
@@ -41,15 +41,23 @@ For example, the sample id that will be associated with the following files:
 
 ```
 ├── 10583739_1_L001-ds.0e7c88a021984a38b930ce5c60ddadfd
-│   ├── 10583739-1_S72_L001_R1_001.fastq.gz
-│   └── 10583739-1_S72_L001_R2_001.fastq.gz
+│   ├── 10583739-1_S72_L001_R1_001.fastq.gz
+│   └── 10583739-1_S72_L001_R2_001.fastq.gz
 ```
 
 is `10583739-1`. This is the text before the first `_` in the file name. Notice that the `-` in the sample id is replaced with an `_` in the directory name - this script is building sample ids from the file names, not the directory names.
 
 ## Running this script from the command line
 
+### Basic Usage
+
 Call the following command:
+
+```
+python3 fq-manifestor input-directory output-filepath
+```
+
+For example:
 
 ```
 python3 fq-manifestor /sequence-data/humanure-run1 humanure-run1-fq-manifest.txt
@@ -66,11 +74,54 @@ qiime tools import --type 'SampleData[PairedEndSequencesWithQuality]' --input-pa
 
 Try running that command in a QIIME 2 conda environment, and it should import successfully.
 
+### Advanced Usage
+
+The command line interface now offers additional options to customize the behavior:
+
+```
+python3 fq-manifestor input-directory output-filepath [options]
+```
+
+Available options:
+
+* `--fq-extensions LIST` - List of fastq file extensions to look for (default: fastq.gz fq.gz)
+* `--split-pattern PATTERN` - Pattern to split filename to extract sample ID (default: _)
+* `--f-read-pattern PATTERN` - Pattern to identify forward reads (default: _R1_)
+* `--r-read-pattern PATTERN` - Pattern to identify reverse reads (default: _R2_)
+* `--filter-pattern PATTERN` - Only include files containing this pattern
+* `--quiet` - Suppress verbose output
+
+For example, if your files use a different naming pattern:
+
+```
+python3 fq-manifestor /data/sequences output.txt --split-pattern "-" --f-read-pattern "_1." --r-read-pattern "_2."
+```
+
+For a full list of options:
+
+```
+python3 fq-manifestor --help
+```
+
 ## Running this script from the Python API
 
-Some customization is possible if you call the underlying Python function directly. Take a look at the `.py` in the GitHub repo if you want to try.
+Some customization is possible if you call the underlying Python function directly:
+
+```python
+import fq_manifestor
+
+fq_manifestor.fq_manifestor(
+    input_dir='/path/to/fastq/files',
+    output_fp='manifest.txt',
+    fq_extensions=['fastq.gz', 'fq.gz'],
+    split_pattern='_',
+    f_read_pattern='_R1_',
+    r_read_pattern='_R2_',
+    filter_pattern=None,
+    verbose=True
+)
+```
 
 ## What if it doesn't work?
 
 Let me know on the [issue tracker](https://github.com/gregcaporaso/fq-manifestor/issues), and I may be able to help. But this is very experimental so no promises!
-
