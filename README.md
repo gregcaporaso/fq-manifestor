@@ -89,6 +89,7 @@ Available options:
 * `--f-read-pattern PATTERN` - Pattern to identify forward reads (default: _R1_)
 * `--r-read-pattern PATTERN` - Pattern to identify reverse reads (default: _R2_)
 * `--filter-pattern PATTERN` - Only include files containing this pattern
+* `--exclude-patterns LIST` - List of patterns to exclude from sample IDs (default: Undetermined)
 * `--quiet` - Suppress verbose output
 
 For example, if your files use a different naming pattern:
@@ -118,6 +119,7 @@ fq_manifestor.fq_manifestor(
     f_read_pattern='_R1_',
     r_read_pattern='_R2_',
     filter_pattern=None,
+    exclude_patterns=['Undetermined'],
     verbose=True
 )
 ```

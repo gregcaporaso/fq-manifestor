@@ -6,7 +6,7 @@ import re
 
 def fq_manifestor(input_dir,
                   output_fp,
-                  fq_extensions=['fastq.gz', 'fq.gz'],
+                  fq_extensions=['fastq.gz', 'fq.gz', 'fastq'],
                   split_pattern='_',
                   f_read_pattern='_R1_',
                   r_read_pattern='_R2_',

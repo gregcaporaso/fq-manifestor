@@ -18,8 +18,8 @@ def main():
                         help='Output filepath for the manifest')
 
     # Optional arguments
-    parser.add_argument('--fq-extensions', nargs='+', default=['fastq.gz', 'fq.gz'],
-                        help='List of fastq file extensions to look for (default: fastq.gz fq.gz)')
+    parser.add_argument('--fq-extensions', nargs='+', default=['fastq.gz', 'fq.gz', 'fastq'],
+                        help='List of fastq file extensions to look for (default: fastq.gz fq.gz fastq)')
     parser.add_argument('--split-pattern', default='_',
                         help='Pattern to split filename to extract sample ID (default: _)')
     parser.add_argument('--f-read-pattern', default='_R1_',
