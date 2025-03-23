@@ -1,22 +1,32 @@
 # fq-manifestor
 
-`fq-manifestor` is script to assist with generating [QIIME 2 paired-end fastq manifest files](https://docs.qiime2.org/2022.2/tutorials/importing/#fastq-manifest-formats). This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2. This script does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2. That increases portability of the script as it can be run on systems without QIIME 2 installed on them.
+`fq-manifestor` is script to assist with generating [QIIME 2 paired-end fastq manifest files](https://amplicon-docs.readthedocs.io/en/latest/how-to-guides/how-to-import.html#import-fastq-manifest).
+This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2.
+This script does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2.
+That increases portability of the script as it can be run on systems without QIIME 2 installed on them.
 
 This script was originally developed to facilitate work with the [NAU Genetics Core Facility](https://in.nau.edu/gcf/).
 
 ## Why is this script needed?
 
-Importing can be hard. I talk a little about why [here](https://gregcaporaso.github.io/q2book/using/importing.html#importing-data-into-qiime-2).
+Importing can be hard.
+I talk a little about why [here](https://amplicon-docs.readthedocs.io/en/latest/explanations/why-importing.html).
 
 ## Requirements
 
 ### Software
 
-`fq-manifestor` requires Python 3. There are no dependencies beyond the Python 3 standard library (i.e., you don't have to have QIIME 2 installed on the computer where this script is run).
+`fq-manifestor` requires Python 3.
+There are no dependencies beyond the Python 3 standard library (i.e., you don't have to have QIIME 2 installed on the computer where this script is run).
 
 ### Input data format
 
-If you have a directory of files, `/sequence-data/humanure-run1`, containing demultiplexed paired end Illumina sequence data this script will assume the directory is structured as follows:
+If you have a directory of files, `/sequence-data/humanure-run1`, containing demultiplexed paired end Illumina sequence data this script will assume:
+- the directory contains fastq files, possibly nested in subdirectories;
+- the fastq files have one of the four extensions `.fastq.gz`, `.fastq`, `.fq.gz`, or `.fq`;
+- the sample id is the part of the fastq file name that occurs before the first underscore (`_`);
+- forward reads are in files whose names contain the text `_R1_`; and
+- reverse reads are in files whose names contain the text `_R2_`.
 
 ```
 $ tree /sequence-data/humanure-run1
@@ -35,7 +45,7 @@ $ tree /sequence-data/humanure-run1
 │   └── 10583739-1_S72_L001_R2_001.fastq.gz
 ```
 
-In this case there are four samples, `07717ac5`, `08a10d08`, `091cbf06`, and `10583739-1`. The samples are grouped into per-sample directories, and there is a forward (R1) and reverse (R2) read file for each sample. This script will assume that the text before the first `_` in the fastq filenames (not the directory names) is the sample id.
+In this case there are four samples, `07717ac5`, `08a10d08`, `091cbf06`, and `10583739-1`.
 
 For example, the sample id that will be associated with the following files:
 
@@ -45,7 +55,10 @@ For example, the sample id that will be associated with the following files:
 │   └── 10583739-1_S72_L001_R2_001.fastq.gz
 ```
 
-is `10583739-1`. This is the text before the first `_` in the file name. Notice that the `-` in the sample id is replaced with an `_` in the directory name - this script is building sample ids from the file names, not the directory names.
+is `10583739-1`.
+This is the text before the first `_` in the file name.
+Notice that the `-` in the sample id is replaced with an `_` in the directory name - this script is building sample ids from the file names, not the directory names.
+Directory names are ignored.
 
 ## Running this script from the command line
 

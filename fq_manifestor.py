@@ -4,14 +4,19 @@ import glob
 import os.path
 import re
 
+_default_fq_extensions = ['fastq.gz', 'fq.gz', 'fastq', 'fq']
+_default_split_pattern = '_'
+_default_f_read_pattern='_R1_'
+_default_r_read_pattern='_R2_'
+_default_exclude_patterns=[]
+
 def fq_manifestor(input_dir,
                   output_fp,
-                  fq_extensions=['fastq.gz', 'fq.gz', 'fastq'],
-                  split_pattern='_',
-                  f_read_pattern='_R1_',
-                  r_read_pattern='_R2_',
-                  filter_pattern=None,
-                  exclude_patterns=['Undetermined'],
+                  fq_extensions=_default_fq_extensions,
+                  split_pattern=_default_split_pattern,
+                  f_read_pattern=_default_f_read_pattern,
+                  r_read_pattern=_default_r_read_pattern,
+                  exclude_patterns=_default_exclude_patterns,
                   verbose=True):
 
     input_dir = os.path.abspath(input_dir)
@@ -21,27 +26,29 @@ def fq_manifestor(input_dir,
     for fq_extension in fq_extensions:
         fq_filepaths += glob.glob('%s/**/*.%s' % (input_dir, fq_extension),
                                  recursive = True)
-    if filter_pattern is not None:
-        fq_filepaths = [fp for fp in fq_filepaths if filter_pattern in fp]
-
     n_fq_filepaths = len(fq_filepaths)
+
     if verbose: print('Found %d fastq files.' % n_fq_filepaths)
 
     sids_to_fps = {}
 
     for fq_filepath in fq_filepaths:
         fq_filename = os.path.basename(fq_filepath)
+
+        # Skip if the fq_filepath matches any exclude pattern
+        if exclude_patterns and any(pattern in fq_filepath for pattern in exclude_patterns):
+            for pattern in exclude_patterns:
+                if pattern in fq_filepath:
+                    if verbose: print("Excluding filepath matching exclude pattern %s: %s" % (pattern, fq_filepath))
+                    n_fq_filepaths -= 1
+            continue
+
         sid_fields = re.split(split_pattern, fq_filename)
 
         if len(sid_fields) == 1:
             raise ValueError('Sample ID not found in file: %s' % fq_filepath)
         else:
             sid = sid_fields[0]
-
-        # Skip if the sample ID matches any exclude pattern
-        if exclude_patterns and any(pattern in sid for pattern in exclude_patterns):
-            if verbose: print("Excluding file with sample ID '%s': %s" % (sid, fq_filepath))
-            continue
 
         if bool(re.search(f_read_pattern, fq_filename)):
             forward = True
@@ -80,6 +87,15 @@ def fq_manifestor(input_dir,
               "patterns aren't working correctly for your files. These can "
               "be customized when using the API.\n")
 
+
+    output_path = os.path.abspath(output_fp)
     with open(output_fp, 'w') as of:
         of.write('\n'.join(lines))
         of.write('\n')
+
+    if verbose:
+        print("To import, try running:")
+        print("qiime tools import "
+              "--type 'SampleData[PairedEndSequencesWithQuality]' "
+              "--input-path %s --output-path demux.qza "
+              "--input-format PairedEndFastqManifestPhred33V2" % output_fp)

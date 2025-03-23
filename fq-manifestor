@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
-import sys
-import os.path
 import argparse
-import fq_manifestor
+import sys
+import os
+from fq_manifestor import (fq_manifestor,
+                           _default_fq_extensions,
+                           _default_split_pattern,
+                           _default_f_read_pattern,
+                           _default_r_read_pattern,
+                           _default_exclude_patterns)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate QIIME 2 paired-end fastq manifest files from a directory of fastq files.",
-        epilog="Example: fq-manifestor input-directory output-filepath"
+        description="Generate QIIME 2 paired-end fastq manifest files from a directory of fastq files",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
     # Required arguments
@@ -18,70 +23,64 @@ def main():
                         help='Output filepath for the manifest')
 
     # Optional arguments
-    parser.add_argument('--fq-extensions', nargs='+', default=['fastq.gz', 'fq.gz', 'fastq'],
-                        help='List of fastq file extensions to look for (default: fastq.gz fq.gz fastq)')
-    parser.add_argument('--split-pattern', default='_',
-                        help='Pattern to split filename to extract sample ID (default: _)')
-    parser.add_argument('--f-read-pattern', default='_R1_',
-                        help='Pattern to identify forward reads (default: _R1_)')
-    parser.add_argument('--r-read-pattern', default='_R2_',
-                        help='Pattern to identify reverse reads (default: _R2_)')
-    parser.add_argument('--filter-pattern',
-                        help='Only include files containing this pattern (default: None)')
-    parser.add_argument('--exclude-patterns', nargs='+', default=['Undetermined'],
-                        help='List of patterns to exclude from sample IDs (default: Undetermined)')
-    parser.add_argument('--quiet', action='store_true',
+    parser.add_argument('--fq-extensions',
+                        type=str,
+                        nargs='+',
+                        default=_default_fq_extensions,
+                        help='List of fastq file extensions to look for')
+
+    parser.add_argument('--split-pattern',
+                        type=str,
+                        default=_default_split_pattern,
+                        help='Pattern to split filename to extract sample ID')
+
+    parser.add_argument('--f-read-pattern',
+                        type=str,
+                        default=_default_f_read_pattern,
+                        help='Pattern to identify forward reads')
+
+    parser.add_argument('--r-read-pattern',
+                        type=str,
+                        default=_default_r_read_pattern,
+                        help='Pattern to identify reverse reads')
+
+    parser.add_argument('--exclude-patterns',
+                        type=str,
+                        nargs='+',
+                        default=_default_exclude_patterns,
+                        help='List of patterns to exclude from filepaths')
+
+    parser.add_argument('--quiet',
+                        action='store_true',
                         help='Suppress verbose output')
 
-    # Check if no arguments were provided - maintain backward compatibility
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(0)
-
-    # Special handling for backward compatibility (exactly 2 positional args, no options)
-    if len(sys.argv) == 3 and not sys.argv[1].startswith('-') and not sys.argv[2].startswith('-'):
-        input_dir = sys.argv[1]
-        output_fp = sys.argv[2]
-        verbose = True
-    else:
-        # Parse arguments with argparse
-        args = parser.parse_args()
-        input_dir = args.input_dir
-        output_fp = args.output_fp
-        verbose = not args.quiet
+    args = parser.parse_args()
+    print(args.f_read_pattern)
 
     # Check if input directory exists
-    if not os.path.isdir(input_dir):
-        print(f"Error: Input directory '{input_dir}' does not exist or is not a directory.", file=sys.stderr)
+    if not os.path.isdir(args.input_dir):
+        print(f"Error: Input directory '{args.input_dir}' does not exist or is not a directory.",
+              file=sys.stderr)
         sys.exit(1)
 
-        # Call the function with all parameters
-        fq_manifestor.fq_manifestor(
-            input_dir=input_dir,
-            output_fp=output_fp,
+    # Run the fq_manifestor function with provided arguments
+    try:
+        fq_manifestor(
+            input_dir=args.input_dir,
+            output_fp=args.output_fp,
             fq_extensions=args.fq_extensions,
             split_pattern=args.split_pattern,
             f_read_pattern=args.f_read_pattern,
             r_read_pattern=args.r_read_pattern,
-            filter_pattern=args.filter_pattern,
             exclude_patterns=args.exclude_patterns,
-            verbose=verbose
+            verbose=not args.quiet
         )
-
-    # If we're in the backward compatibility mode, call with default parameters
-    if len(sys.argv) == 3 and not sys.argv[1].startswith('-') and not sys.argv[2].startswith('-'):
-        fq_manifestor.fq_manifestor(input_dir, output_fp)
-
-    # Get absolute path for output message
-    output_fp = os.path.abspath(output_fp)
-
-    # Print import command suggestion
-    if verbose:
-        print("To import, try running:")
-        print("qiime tools import "
-              "--type 'SampleData[PairedEndSequencesWithQuality]' "
-              "--input-path %s --output-path demux.qza "
-              "--input-format PairedEndFastqManifestPhred33V2" % output_fp)
+    except ValueError as e:
+        print(f"Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
