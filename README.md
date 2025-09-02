@@ -35,7 +35,7 @@ $ tree /sequence-data/humanure-run1
 │   └── 10583739-1_S72_L001_R2_001.fastq.gz
 ```
 
-In this case there are four samples, `07717ac5`, `08a10d08`, `091cbf06`, and `10583739-1`. The samples are grouped into per-sample directories, and there is a forward (R1) and reverse (R2) read file for each sample. This script will assume that the text before the first `_` in the fastq filenames (not the directory names) is the sample id.
+In this case there are four samples, `07717ac5`, `08a10d08`, `091cbf06`, and `10583739-1`. The samples are grouped into per-sample directories, and there is a forward (R1) and reverse (R2) read file for each sample. This script will assume that the text before the first `_` in the fastq filenames (not the directory names) is the sample id. Note that the sample ID preceding the first `_` must be the same for both forward (R1) and reverse (R2) read.
 
 For example, the sample id that will be associated with the following files:
 

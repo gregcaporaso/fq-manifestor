@@ -60,10 +60,10 @@ def fq_manifestor(input_dir,
     lines = ['sample-id\tforward-absolute-filepath\treverse-absolute-filepath']
     for sid, (fwd_fq_filepath, rev_fq_filepath) in sids_to_fps.items():
         if fwd_fq_filepath is None:
-            raise ValueError('Missing forward read for sample: %s' % s)
+            raise ValueError('Missing forward read for sample: %s' % sid)
 
         if rev_fq_filepath is None:
-            raise ValueError('Missing reverse read for sample: %s' % s)
+            raise ValueError('Missing reverse read for sample: %s' % sid)
 
         lines.append('%s\t%s\t%s' % (sid, fwd_fq_filepath, rev_fq_filepath))
 
