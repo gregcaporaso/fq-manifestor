@@ -1,0 +1,54 @@
+# This file was written with a little help from my friends
+# (claude.ai, in this case)
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fq-manifestor"
+version = "0.1.0"
+description = "A script to assist with generating fastq manifest files"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "BSD-3-Clause"}
+authors = [
+    {name = "Greg Caporaso", email = "greg.caporaso@nau.edu"}
+]
+maintainers = [
+    {name = "Greg Caporaso", email = "gregcaporaso@gmail.com"}
+]
+keywords = [
+    "qiime2",
+    "bioinformatics",
+    "manifest",
+    "fastq",
+    "sequencing"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/gregcaporaso/fq-manifestor"
+Repository = "https://github.com/gregcaporaso/fq-manifestor"
+Issues = "https://github.com/gregcaporaso/fq-manifestor/issues"
+
+[project.scripts]
+fq-manifestor = "fq_manifestor:main"
+
+[tool.setuptools]
+py-modules = ["fq_manifestor"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fq_manifestor*"]

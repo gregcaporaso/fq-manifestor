@@ -1,18 +1,30 @@
 # fq-manifestor
 
-`fq-manifestor` is script to assist with generating [QIIME 2 paired-end fastq manifest files](https://docs.qiime2.org/2022.2/tutorials/importing/#fastq-manifest-formats). This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2. This script does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2. That increases portability of the script as it can be run on systems without QIIME 2 installed on them.
+`fq-manifestor` is a script to assist with generating [QIIME 2 paired-end fastq manifest files](https://amplicon-docs.qiime2.org/en/latest/how-to-guides/how-to-import.html#import-fastq-manifest).
+This is not widely tested and likely not very general purpose, but is designed as a starting point to assist users with importing paired-end demultiplexed fastq files for use with QIIME 2.
+This script does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2.
+That increases portability of the script as it can be run on systems without QIIME 2 installed on them.
 
 This script was originally developed to facilitate work with the [NAU Genetics Core Facility](https://in.nau.edu/gcf/).
 
 ## Why is this script needed?
 
-Importing can be hard. I talk a little about why [here](https://gregcaporaso.github.io/q2book/using/importing.html#importing-data-into-qiime-2).
+Importing can be challenging.
+I explain why it's necessary and challenging [here](https://amplicon-docs.qiime2.org/en/latest/explanations/why-importing.html).
 
 ## Requirements
 
 ### Software
 
 `fq-manifestor` requires Python 3. There are no dependencies beyond the Python 3 standard library (i.e., you don't have to have QIIME 2 installed on the computer where this script is run).
+
+### Installation
+
+Run:
+
+```shell
+pip install https://github.com/gregcaporaso/fq-manifestor/archive/refs/heads/main.zip
+```
 
 ### Input data format
 
@@ -52,7 +64,7 @@ is `10583739-1`. This is the text before the first `_` in the file name. Notice 
 Call the following command:
 
 ```
-python3 fq-manifestor /sequence-data/humanure-run1 humanure-run1-fq-manifest.txt
+fq-manifestor /sequence-data/humanure-run1 humanure-run1-fq-manifest.txt
 ```
 
 This will either error with a hopefully-informative error message (but no guarantees!) or succeed with output that looks something like:
@@ -73,4 +85,3 @@ Some customization is possible if you call the underlying Python function direct
 ## What if it doesn't work?
 
 Let me know on the [issue tracker](https://github.com/gregcaporaso/fq-manifestor/issues), and I may be able to help. But this is very experimental so no promises!
-
