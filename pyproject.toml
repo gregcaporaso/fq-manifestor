@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fq-manifestor"
+version = "0.2.0"
+description = "Generate QIIME 2 paired-end fastq manifest files from demultiplexed reads"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.9",
+]
+
+[project.scripts]
+fq-manifestor = "fq_manifestor.cli:app"
+
+[project.urls]
+Repository = "https://github.com/gregcaporaso/fq-manifestor"
+Issues = "https://github.com/gregcaporaso/fq-manifestor/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["fq_manifestor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
