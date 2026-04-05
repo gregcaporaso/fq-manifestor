@@ -77,4 +77,3 @@ def fq_manifestor(input_dir,
     with open(output_fp, 'w') as of:
         of.write('\n'.join(lines))
         of.write('\n')
-
