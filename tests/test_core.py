@@ -37,7 +37,9 @@ def test_basic_paired_end(tmp_path):
     rows = _read_manifest(out)
     assert set(rows) == {"sampleA", "sampleB"}
     assert os.path.isabs(rows["sampleA"][0])
+    assert rows["sampleA"][0].endswith("sampleA_S1_L001_R1_001.fastq.gz")
     assert os.path.isabs(rows["sampleA"][1])
+    assert rows["sampleA"][1].endswith("sampleA_S1_L001_R2_001.fastq.gz")
 
 
 def test_recursive_search(tmp_path):
