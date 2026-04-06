@@ -1,17 +1,17 @@
 # fq-manifestor
 
-`fq-manifestor` is a tool to assist with generating [QIIME 2 paired-end fastq manifest files](https://docs.qiime2.org/2022.2/tutorials/importing/#fastq-manifest-formats). This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2. This tool does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2. That increases portability of the tool as it can be run on systems without QIIME 2 installed on them.
+`fq-manifestor` is a tool to assist with generating [QIIME 2 paired-end fastq manifest files](https://amplicon-docs.qiime2.org/en/stable/how-to-guides/how-to-import.html#import-fastq-manifest). This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2. This tool does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2. That increases portability of the tool as it can be run on systems without QIIME 2 installed on them.
 
 This tool was originally developed to facilitate work with the [NAU Genetics Core Facility](https://in.nau.edu/gcf/).
 
 ## Why is this tool needed?
 
-Importing can be hard. I talk a little about why [here](https://gregcaporaso.github.io/q2book/using/importing.html#importing-data-into-qiime-2).
+Importing can be hard. I talk a little about why [here](https://amplicon-docs.qiime2.org/en/stable/explanations/why-importing.html).
 
 ## Installation
 
 ```
-pip install fq-manifestor
+pip install https://github.com/gregcaporaso/fq-manifestor/archive/refs/heads/main.zip
 ```
 
 For development:
@@ -23,6 +23,7 @@ pip install -e ".[dev]"
 ```
 
 Requires Python 3.10–3.12.
+Should be easily installable in any rachis deployments (e.g., QIIME 2, MOSHPIT) ≥ 2026.1. 
 
 ## Input data format
 
