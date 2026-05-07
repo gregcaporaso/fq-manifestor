@@ -74,7 +74,7 @@ fq-manifestor [OPTIONS] INPUT_DIR OUTPUT_FP
 | Option | Default | Description |
 | --- | --- | --- |
 | `--fq-extensions TEXT` | `fastq.gz,fq.gz` | Comma-separated list of fastq file extensions to search for. |
-| `--split-pattern TEXT` | `_` | Regex pattern used to split filenames to extract sample IDs. |
+| `--sample-id-pattern TEXT` | `(.*?)_` | Regex with a capture group used to extract the sample ID from filenames. |
 | `--f-read-pattern TEXT` | `_R1_` | Regex pattern identifying forward reads. |
 | `--r-read-pattern TEXT` | `_R2_` | Regex pattern identifying reverse reads. |
 | `--filter-pattern TEXT` | | Optional substring; only files containing this string are included. |

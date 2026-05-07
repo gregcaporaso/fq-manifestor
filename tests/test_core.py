@@ -78,13 +78,13 @@ def test_custom_extensions(tmp_path):
     assert "sampleA" in rows
 
 
-def test_custom_split_pattern(tmp_path):
+def test_custom_sample_id_pattern(tmp_path):
     _touch(tmp_path / "sampleA-S1-L001-R1-001.fastq.gz")
     _touch(tmp_path / "sampleA-S1-L001-R2-001.fastq.gz")
 
     out = tmp_path / "manifest.tsv"
     fq_manifestor(
-        str(tmp_path), str(out), split_pattern="-",
+        str(tmp_path), str(out), sample_id_pattern="(.*?)-",
         f_read_pattern="-R1-", r_read_pattern="-R2-", verbose=False
     )
 

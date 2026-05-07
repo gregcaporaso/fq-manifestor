@@ -29,13 +29,13 @@ def main(
             help="Comma-separated list of fastq file extensions to search for.",
         ),
     ] = "fastq.gz,fq.gz",
-    split_pattern: Annotated[
+    sample_id_pattern: Annotated[
         str,
         typer.Option(
-            "--split-pattern",
-            help="Regex pattern used to split filenames to extract sample IDs.",
+            "--sample-id-pattern",
+            help="Regex with a capture group used to extract the sample ID from filenames.",
         ),
-    ] = "_",
+    ] = "(.*?)_",
     f_read_pattern: Annotated[
         str,
         typer.Option(
@@ -71,7 +71,7 @@ def main(
         input_dir=input_dir,
         output_fp=output_fp,
         fq_extensions=extensions,
-        split_pattern=split_pattern,
+        sample_id_pattern=sample_id_pattern,
         f_read_pattern=f_read_pattern,
         r_read_pattern=r_read_pattern,
         filter_pattern=filter_pattern,
