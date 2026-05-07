@@ -7,7 +7,7 @@ import re
 def fq_manifestor(input_dir,
                   output_fp,
                   fq_extensions=['fastq.gz', 'fq.gz'],
-                  split_pattern='_',
+                  sample_id_pattern='(.*?)_',
                   f_read_pattern='_R1_',
                   r_read_pattern='_R2_',
                   filter_pattern=None,
@@ -30,12 +30,10 @@ def fq_manifestor(input_dir,
 
     for fq_filepath in fq_filepaths:
         fq_filename = os.path.basename(fq_filepath)
-        sid_fields = re.split(split_pattern, fq_filename)
-
-        if len(sid_fields) == 1:
+        m = re.search(sample_id_pattern, fq_filename)
+        if not m or not m.group(1):
             raise ValueError('Sample ID not found in file: %s' % fq_filepath)
-        else:
-            sid = sid_fields[0]
+        sid = m.group(1)
 
         if bool(re.search(f_read_pattern, fq_filename)):
             forward = True
