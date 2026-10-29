@@ -1,3 +1,10 @@
+👋 Need to generate fastq manifest files for QIIME 2 or MOSHPIT? 
+
+Start with the **web-based fq-manifestor** tool: https://gregcaporaso.github.io/fq-manifestor-web/
+
+This repository is for the fq-manifestor command line software, which is also super-helpful but is a little more complicated to use.
+It's therefore recommended for more specialized use cases, when the web-based tool wouldn't work for you. 
+
 # fq-manifestor
 
 `fq-manifestor` is a tool to assist with generating [QIIME 2 paired-end fastq manifest files](https://amplicon-docs.qiime2.org/en/stable/how-to-guides/how-to-import.html#import-fastq-manifest). This is not widely tested and likely not very general purpose, but is designed as a starting point to assist Illumina users with importing paired-end demultiplexed fastq files for use with QIIME 2. This tool does not actually import your data into QIIME 2, but rather generates a fastq manifest file and suggests an import command to use with QIIME 2. That increases portability of the tool as it can be run on systems without QIIME 2 installed on them.
